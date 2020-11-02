@@ -1,4 +1,8 @@
-const isBalanced = ([...str]) => {
+interface ITableItem {
+  [key: string]: boolean
+}
+
+export const isBalanced = ([...str]) => {
   return str.reduce((uptoPrevChar, thisChar) => {
     ((thisChar === '(' && uptoPrevChar++ || thisChar === ')' && uptoPrevChar--))
 
@@ -6,23 +10,31 @@ const isBalanced = ([...str]) => {
   }, 0) === 0
 }
 
-const extractValues = (str: string) => {
+export const restoreBalance = (str: string) => {
+  while (str.charAt(0) === '(') {
+    str = str.substring(1)
+  }
+
+  while (str.charAt(str.length - 1) === ')' && !isBalanced(str)) {
+    str = str.slice(0, -1)
+  }
+
+  return str.trim()
+}
+
+export const extractValues = (str: string) => {
   return [
     ...new Set(
       str
       .replace(/!|&|\||=/g, ' ')
       .split('  ')
-      .reduce<string[]>((acc, el) => {
-        if (!el) return acc
-        return !new RegExp(/\(([^)]+)\)/).test(el) ? [...acc, el.replace(/\(|\)| /g, '')] : [...acc, el]
-      }, [])
-      .map((el) => isBalanced(el) ? el : el.replace(/\){2,}/g, ')').replace(/\({2,}/g, '('))
+      .map((el) => isBalanced(el) ? el.trim() : restoreBalance(el.trim()))
       .filter(Boolean)
     )
   ]
 }
 
-const convertValues = (input: string) => {
+export const convertValues = (input: string) => {
   const variables = extractValues(input)
   let parsedString = input
 
@@ -35,7 +47,7 @@ const convertValues = (input: string) => {
   return {variables, parsedString}
 }
 
-const calcResult = (result: any, body: string) => {
+export const calcResult = (result: ITableItem, body: string) => {
   const fn = Function(`return (${Object.keys(result).join()}) => ${body}`)()
   return fn(...Object.values(result))
 }
@@ -44,7 +56,7 @@ export const generateTable = (input: string) => {
   const {variables, parsedString} = convertValues(input)
   const booleans = extractValues(input)
   const numbersOfSets = 1 << variables.length
-  const table: Array<{[key: string]: boolean}> = []
+  const table: ITableItem[] = []
 
   for (let i = 0; i < numbersOfSets; i++) {
     table.push({})
