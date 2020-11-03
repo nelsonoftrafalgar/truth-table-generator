@@ -1,5 +1,15 @@
+import { strict } from 'assert'
+
 interface ITableItem {
   [key: string]: boolean
+}
+
+export const isComment = (str: string) => {
+  return str.includes('//')
+}
+
+export const isTernary = (str: string) => {
+  return str.includes(' ? ')
 }
 
 export const isBalanced = ([...str]) => {

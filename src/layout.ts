@@ -27,8 +27,16 @@ export const getLayout = (input: string) => {
           color: #d84747;
         }
 
+        .true-row {
+          background-color: #173a1b
+        }
+
         .true {
           color: #4cad58;
+        }
+
+        .false-row {
+          background-color: #542929
         }
       </style>
     </head>
@@ -55,6 +63,7 @@ export const getLayout = (input: string) => {
               td.classList.add(value.toString());
               tr.appendChild(td);
             });
+            tr.classList.add(tr.firstElementChild.className + '-row')
             table.appendChild(tr);
           });
         };

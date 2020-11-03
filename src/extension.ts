@@ -2,7 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-import { generateTable } from '.';
+import { generateTable, isComment, isTernary } from '.';
+
 import { getLayout } from './layout';
 
 // this method is called when your extension is activated
@@ -25,6 +26,17 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const selection = editor?.document.getText(editor.selection)!
+
+		if (isComment(selection)) {
+			vscode.window.showErrorMessage('comments are not supported')
+			return
+		}
+
+		if (isTernary(selection)) {
+			vscode.window.showErrorMessage('ternary operator is not supported')
+			return
+		}
+
 		const panel = vscode.window.createWebviewPanel(
 			'truthTableGenerator',
 			selection,
