@@ -1,5 +1,3 @@
-import { strict } from 'assert'
-
 interface ITableItem {
   [key: string]: boolean
 }
